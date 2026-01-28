@@ -2,15 +2,15 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
-export async function getStaticPaths() {
-  const guides = await getCollection('guides');
-  return guides.map((guide) => ({
-    params: { slug: guide.slug },
-    props: { guide },
-  }));
+const { slug } = Astro.params;
+
+const guides = await getCollection('guides');
+const guide = guides.find((g) => g.slug === slug);
+
+if (!guide) {
+  return Astro.redirect('/');
 }
 
-const { guide } = Astro.props;
 const { Content } = await guide.render();
 
 const formattedDate = guide.data.pubDate.toLocaleDateString('ru-RU', {
@@ -59,4 +59,6 @@ const formattedDate = guide.data.pubDate.toLocaleDateString('ru-RU', {
   .prose pre code { @apply bg-transparent p-0; }
   .prose blockquote { @apply border-l-4 border-gray-300 pl-4 italic text-gray-600; }
   .prose img { @apply rounded-lg shadow-md my-4; }
+  .prose hr { @apply my-8 border-gray-200; }
+  .prose strong { @apply font-semibold; }
 </style>
