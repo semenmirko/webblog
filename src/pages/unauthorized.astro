@@ -1,0 +1,123 @@
+---
+// This page is shown when user is not authenticated
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Требуется авторизация</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+      }
+      .card {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+      .icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        color: #1a1a1a;
+        font-size: 24px;
+        margin-bottom: 16px;
+      }
+      p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+      .steps {
+        text-align: left;
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 24px;
+      }
+      .step {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 12px;
+      }
+      .step:last-child {
+        margin-bottom: 0;
+      }
+      .step-number {
+        background: #667eea;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+      .step-text {
+        color: #444;
+        font-size: 14px;
+      }
+      .bot-link {
+        display: inline-block;
+        background: #0088cc;
+        color: white;
+        padding: 14px 28px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+      .bot-link:hover {
+        background: #006699;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="icon">🔐</div>
+      <h1>Требуется авторизация</h1>
+      <p>Для доступа к гайдам нужно авторизоваться через Telegram бота.</p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="step-number">1</span>
+          <span class="step-text">Откройте бота в Telegram</span>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span>
+          <span class="step-text">Нажмите /start</span>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <span class="step-text">Перейдите по полученной ссылке</span>
+        </div>
+      </div>
+
+      <a href="https://t.me/mirkoguide_bot" class="bot-link" target="_blank">
+        Открыть бота в Telegram
+      </a>
+    </div>
+  </body>
+</html>

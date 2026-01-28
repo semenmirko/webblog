@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables (ВАЖНО - не загружать секреты!)
+.env
+.env.local
+.env.production
+
+# Local database
+*.db
+*.db-journal
+
+# Astro
+.astro/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Drizzle
+drizzle/
+.claude/

@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map((guide) => ({
+    params: { slug: guide.slug },
+    props: { guide },
+  }));
+}
+
+const { guide } = Astro.props;
+const { Content } = await guide.render();
+
+const formattedDate = guide.data.pubDate.toLocaleDateString('ru-RU', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<Layout title={guide.data.title}>
+  <article>
+    <header class="mb-8">
+      <a href="/" class="text-blue-600 hover:text-blue-800 text-sm mb-4 inline-block">
+        ← Назад к списку
+      </a>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">{guide.data.title}</h1>
+      <div class="flex items-center gap-4 text-gray-500">
+        <time>{formattedDate}</time>
+        {guide.data.tags && guide.data.tags.length > 0 && (
+          <div class="flex gap-2">
+            {guide.data.tags.map((tag: string) => (
+              <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
+    </header>
+
+    <div class="prose prose-gray max-w-none">
+      <Content />
+    </div>
+  </article>
+</Layout>
+
+<style is:global>
+  .prose h1 { @apply text-2xl font-bold mt-8 mb-4; }
+  .prose h2 { @apply text-xl font-semibold mt-6 mb-3; }
+  .prose h3 { @apply text-lg font-semibold mt-4 mb-2; }
+  .prose p { @apply mb-4 leading-relaxed; }
+  .prose ul { @apply list-disc pl-6 mb-4; }
+  .prose ol { @apply list-decimal pl-6 mb-4; }
+  .prose li { @apply mb-2; }
+  .prose a { @apply text-blue-600 hover:text-blue-800 underline; }
+  .prose code { @apply bg-gray-100 px-1 py-0.5 rounded text-sm; }
+  .prose pre { @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4; }
+  .prose pre code { @apply bg-transparent p-0; }
+  .prose blockquote { @apply border-l-4 border-gray-300 pl-4 italic text-gray-600; }
+  .prose img { @apply rounded-lg shadow-md my-4; }
+</style>

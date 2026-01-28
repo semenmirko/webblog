@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GuideCard from '../components/GuideCard.astro';
+import { getCollection } from 'astro:content';
+
+const guides = await getCollection('guides');
+
+// Sort by date, newest first
+const sortedGuides = guides.sort((a, b) =>
+  b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Layout title="Гайды">
+  <h1 class="text-3xl font-bold text-gray-900 mb-8">Все гайды</h1>
+
+  {sortedGuides.length === 0 ? (
+    <div class="text-center py-12">
+      <p class="text-gray-500 text-lg">Пока нет ни одного гайда.</p>
+      <p class="text-gray-400 mt-2">Скоро здесь появятся полезные материалы!</p>
+    </div>
+  ) : (
+    <div class="space-y-4">
+      {sortedGuides.map((guide) => (
+        <GuideCard
+          title={guide.data.title}
+          description={guide.data.description}
+          slug={guide.slug}
+          pubDate={guide.data.pubDate}
+          tags={guide.data.tags}
+        />
+      ))}
+    </div>
+  )}
+</Layout>
