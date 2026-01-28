@@ -7,8 +7,12 @@ import { eq } from 'drizzle-orm';
 const BOT_TOKEN = import.meta.env.BOT_TOKEN || process.env.BOT_TOKEN || '';
 const SITE_URL = import.meta.env.SITE_URL || process.env.SITE_URL || 'http://localhost:4321';
 
+// Твой Telegram ID - только ты можешь делать рассылку
+const ADMIN_ID = '257047011';
+
 export const bot = new Telegraf(BOT_TOKEN);
 
+// Команда /start - выдаёт ссылку на сайт
 bot.command('start', async (ctx) => {
   try {
     const telegramId = ctx.from.id.toString();
@@ -57,6 +61,74 @@ bot.command('start', async (ctx) => {
   } catch (error) {
     console.error('Error in /start command:', error);
     await ctx.reply('Произошла ошибка. Попробуй позже.');
+  }
+});
+
+// Команда /broadcast - рассылка всем пользователям (только для админа)
+bot.command('broadcast', async (ctx) => {
+  try {
+    const senderId = ctx.from.id.toString();
+
+    // Проверяем что это админ
+    if (senderId !== ADMIN_ID) {
+      await ctx.reply('У тебя нет прав для рассылки.');
+      return;
+    }
+
+    // Получаем текст сообщения (всё после /broadcast )
+    const message = ctx.message.text.replace('/broadcast ', '').trim();
+
+    if (!message || message === '/broadcast') {
+      await ctx.reply('Использование: /broadcast Текст сообщения\n\nПример: /broadcast Привет! Вышел новый гайд!');
+      return;
+    }
+
+    // Получаем всех пользователей
+    const allUsers = await db.select().from(users);
+
+    let sent = 0;
+    let failed = 0;
+
+    await ctx.reply(`Начинаю рассылку для ${allUsers.length} пользователей...`);
+
+    for (const user of allUsers) {
+      try {
+        await bot.telegram.sendMessage(user.telegramId, message);
+        sent++;
+      } catch (error) {
+        failed++;
+        console.error(`Failed to send to ${user.telegramId}:`, error);
+      }
+      // Небольшая задержка чтобы не превысить лимиты Telegram
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+
+    await ctx.reply(`Рассылка завершена!\n\nОтправлено: ${sent}\nНе доставлено: ${failed}`);
+  } catch (error) {
+    console.error('Error in /broadcast command:', error);
+    await ctx.reply('Ошибка при рассылке.');
+  }
+});
+
+// Команда /stats - статистика (только для админа)
+bot.command('stats', async (ctx) => {
+  try {
+    const senderId = ctx.from.id.toString();
+
+    if (senderId !== ADMIN_ID) {
+      await ctx.reply('У тебя нет прав для просмотра статистики.');
+      return;
+    }
+
+    const allUsers = await db.select().from(users);
+
+    await ctx.reply(
+      `📊 Статистика:\n\n` +
+      `Всего пользователей: ${allUsers.length}`
+    );
+  } catch (error) {
+    console.error('Error in /stats command:', error);
+    await ctx.reply('Ошибка при получении статистики.');
   }
 });
 
